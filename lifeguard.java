@@ -7,15 +7,11 @@ public class lifeguard {
 	String name;
 	String dayNotAvailable;
 	ArrayList<String> daysNotAvailable;
-	Integer maxNumDays;
-	boolean noMoreDays;
 	Integer numDays;
 
 	public lifeguard(String name) {
 		this.name = name;
 		this.daysNotAvailable = new ArrayList<String>();
-		this.maxNumDays = 5;
-		this.noMoreDays = false;
 		this.numDays = 0;
 	}
 	
