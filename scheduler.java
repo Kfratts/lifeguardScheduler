@@ -6,16 +6,16 @@ import java.util.ArrayList;
 public class scheduler {
 	List<lifeguard> lifeguardList;
 	List<seniorGuard> seniorGuards;
+	List<gate> gate;
 	manager manager;
 	headGuard headGuard;
 	asstManager asstManager;
-	gate[] gate;
 	days[] daysOfWeek;
 	
 	public scheduler() {
 		new ArrayList<String>();
 		this.asstManager = new asstManager("Alexis");
-		this.gate = new gate[]{new gate("Gate1"), new gate("Gate2")};
+		this.gate = new ArrayList<gate>();
 		this.headGuard = new headGuard("Cameron");
 		this.lifeguardList = new ArrayList<lifeguard>();
 		this.seniorGuards = new ArrayList<seniorGuard>();
@@ -49,6 +49,17 @@ public class scheduler {
 
 	}
 	
+	public static gate nextElementGate(List<gate> list, gate element){
+		int index = list.indexOf(element)+1;
+		if (index == list.size()) {
+			gate next = list.get(0);
+			return next;
+		}
+		gate next = list.get(index);
+		return next;
+		
+	}
+	
 	public void generateSchedule(){
 		
 		for(lifeguard l : this.lifeguardList) {
@@ -59,8 +70,37 @@ public class scheduler {
 			sg.SGcheckAvailability();
 			System.out.println(sg.name + " is not available on these days: " + sg.daysNotAvailable);
 		}
+		for(gate g : this.gate) {
+			g.checkAvailability();
+			System.out.println(g.name + " is not available on these days: " + g.daysNotAvailable);
+		}
+		
 		
 			for (days d : this.daysOfWeek) {
+					for(gate g : this.gate) {
+						if(d.numGate < 1) {
+							if(g.numDays < 4) {
+								if (!(g.daysNotAvailable.contains(d.name))) {
+									if(!(d.gateOnDay.contains(g)) && d.numGate < 1) {
+										if(nextElementGate(this.gate, g).numDays < g.numDays && d.numGate < 1) {
+											d.gateOnDay.add(nextElementGate(this.gate, g));
+											nextElementGate(this.gate, g).numDays++;
+											d.numGate++;
+										}
+										else {
+											if(d.numSG < 2) {
+												//System.out.println(d.numGuards);
+												d.gateOnDay.add(g);
+												//System.out.println(l.name);
+												g.numDays++;
+												d.numGate++;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 					for(seniorGuard sg : seniorGuards) {
 						if(d.numSG < 2) {
 							if(sg.numDays < 5) {
@@ -117,6 +157,9 @@ public class scheduler {
 				for(seniorGuard senior : d.sgOnDay) {
 					System.out.println("Senior Guards On: " + senior.name);
 				}
+				for(gate gate : d.gateOnDay) {
+					System.out.println("Gate On: " + gate.name);
+				}
 			}
 		}
 		
@@ -134,6 +177,8 @@ public class scheduler {
 		schedule.seniorGuards.add(new seniorGuard("SG ONE"));
 		schedule.seniorGuards.add(new seniorGuard("SG TWO"));
 		schedule.seniorGuards.add(new seniorGuard("SG THREE"));
+		schedule.gate.add(new gate("Gate ONE"));
+		schedule.gate.add(new gate("Gate TWO"));
 		//schedule.lifeguardList.add(new lifeguard("seven"));
 		//schedule.lifeguardList.add(new lifeguard("eight"));
 		//schedule.lifeguardList.add(new lifeguard("nine"));
