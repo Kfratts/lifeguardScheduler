@@ -2,6 +2,7 @@ package lifeguardScheduler;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class scheduler {
 	List<lifeguard> lifeguardList;
@@ -35,25 +36,36 @@ public class scheduler {
 			l.checkAvailability();
 			System.out.println(l.name + " is not available on these days: " + l.daysNotAvailable);
 		}
-		for (days d : this.daysOfWeek) {
-				for (lifeguard l : this.lifeguardList) {
-					if(l.numDays == 5) {
-						lifeguardList.remove(l);
-					}
-					if(d.numGuards < 5) {
-						if(l.numDays < 2) {
-							d.guardsOnDay.add(l);
-							l.numDays++;
-							d.numGuards++;
-						}
-					}
-								
+		/*
+		 * 
+		 * ListIterator<Book> iter = books.listIterator();
+		while(iter.hasNext()){
+    		if(iter.next().getIsbn().equals(isbn)){
+        		iter.remove();
+    }
+}
+		 */
+		//ListIterator<lifeguard> iter = lifeguardList.listIterator();
+			for (days d : this.daysOfWeek) {
+				for (lifeguard l : lifeguardList) {
+					if(d.numGuards < 4) {
+						System.out.println(d.numGuards);
+						d.guardsOnDay.add(l);
+						System.out.println(l.name);
+						l.numDays++;
+						d.numGuards++;
+					}					
 				
-			}	
+				}
 			System.out.println("Day of Week: " + d.name);
-			System.out.println("Guards on: " + d.guardsOnDay);
+			for(lifeguard guard : d.guardsOnDay) {
+				System.out.println("Guards on: " + guard.name);
+			}
+			}
 		}
-	}
+		
+		
+	
 	
 	public static void main(String[] args) {
 		scheduler schedule = new scheduler();

@@ -7,9 +7,9 @@ public class lifeguard {
 	String name;
 	String dayNotAvailable;
 	ArrayList<String> daysNotAvailable;
-	int maxNumDays;
+	Integer maxNumDays;
 	boolean noMoreDays;
-	int numDays;
+	Integer numDays;
 
 	public lifeguard(String name) {
 		this.name = name;

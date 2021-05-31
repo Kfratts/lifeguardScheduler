@@ -16,7 +16,10 @@ public class days {
 		this.guardsOnDay = new ArrayList<lifeguard>();
 		this.managerOn = false;
 		this.gate = false;
+		this.numGuards = guardsOnDay.size();
 	}
+	
+	
 	
 	
 }
