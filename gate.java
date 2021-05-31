@@ -14,6 +14,11 @@ public class gate {
 		this.name = name;
 		this.daysNotAvailable = new ArrayList<String>();
 	}
+	/*
+	 * Ensures the availability of the employee.
+	 * @param none
+	 * @return none
+	 */
 	public void checkAvailability() {
 		Scanner scan = new Scanner(System.in);
 		System.out.println("Please input the days " + this.name + "is not available. " + "Input the days in the following format: Monday, Tuesday... If the guard is available all days then just press None");

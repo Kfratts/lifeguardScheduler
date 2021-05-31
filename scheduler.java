@@ -23,10 +23,15 @@ public class scheduler {
 		this.daysOfWeek = new days[]{new days("Monday"), new days("Tuesday"), new days("Wednesday"), new days("Thursday"), new days("Friday"), new days("Saturday"), new days("Sunday")};
 	}
 	
-	public void addGuards(lifeguard guard) {
-		lifeguardList.add(guard);
-	}
-	
+	//public void addGuards(lifeguard guard) {
+		//lifeguardList.add(guard);
+	//}
+	/*
+	 * Returns the next element in the lifeguard list. 
+	 * @param list: lifeguards list
+	 * @param element: element in list that will be used as the index for next element
+	 * @return guardNext: returns next element in the list
+	 */
 	public static lifeguard nextElement(List<lifeguard> list,lifeguard element){
 		int index = list.indexOf(element)+1;
 		if(index == list.size()) {
@@ -37,7 +42,12 @@ public class scheduler {
 	    return guardNext;
 
 	}
-	
+	/*
+	 * Returns the next element in the senior guards list. 
+	 * @param list: senior guards list
+	 * @param element: element in list that will be used as the index for next element
+	 * @return guardNext: returns next element in the list
+	 */
 	public static seniorGuard nextElementSG(List<seniorGuard> list,seniorGuard element){
 		int index = list.indexOf(element)+1;
 		if(index == list.size()) {
@@ -48,7 +58,12 @@ public class scheduler {
 	    return guardNext;
 
 	}
-	
+	/*
+	 * Returns the next element in the gate list. 
+	 * @param list: gate list
+	 * @param element: element in list that will be used as the index for next element
+	 * @return guardNext: returns next element in the list
+	 */
 	public static gate nextElementGate(List<gate> list, gate element){
 		int index = list.indexOf(element)+1;
 		if (index == list.size()) {
@@ -59,9 +74,13 @@ public class scheduler {
 		return next;
 		
 	}
-	
+	/*
+	 * Generates Schedule and ensures the correct number of lifeguards, senior guards, head guard, manager, asst manager, grounds personnel are on duty.
+	 * @param None
+	 * @return None
+	 */
 	public void generateSchedule(){
-		
+		//check availability of lifeguards, senior guards, and gate personell
 		for(lifeguard l : this.lifeguardList) {
 			l.checkAvailability();
 			System.out.println(l.name + " is not available on these days: " + l.daysNotAvailable);
@@ -76,16 +95,16 @@ public class scheduler {
 		}
 		
 		
-			for (days d : this.daysOfWeek) {
-					for(gate g : this.gate) {
-						if(d.numGate < 1) {
-							if(g.numDays < 4) {
-								if (!(g.daysNotAvailable.contains(d.name))) {
-									if(!(d.gateOnDay.contains(g)) && d.numGate < 1) {
-										if(nextElementGate(this.gate, g).numDays < g.numDays && d.numGate < 1) {
-											d.gateOnDay.add(nextElementGate(this.gate, g));
-											nextElementGate(this.gate, g).numDays++;
-											d.numGate++;
+			for (days d : this.daysOfWeek) { //iterate days of week array
+					for(gate g : this.gate) { //iterate gate personell
+						if(d.numGate < 1) {  //minimum number of gate personell per day is 1
+							if(g.numDays < 4) { //ensure no gate personell works more than 4 days
+								if (!(g.daysNotAvailable.contains(d.name))) { //ensure the gate personell is available at current day
+									if(!(d.gateOnDay.contains(g)) && d.numGate < 1) { //ensure the gate personell was not already added
+										if(nextElementGate(this.gate, g).numDays < g.numDays && d.numGate < 1) { //check to make sure one gate personell isn't working more than another
+											d.gateOnDay.add(nextElementGate(this.gate, g)); //add next gate personell to schedule if they have less days working than the previous gate personell.
+											nextElementGate(this.gate, g).numDays++; //add one to the number of days worked by that gate personell
+											d.numGate++; //add one to the number of gate personell
 										}
 										else {
 											if(d.numSG < 2) {
