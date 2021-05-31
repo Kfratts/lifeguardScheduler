@@ -30,6 +30,17 @@ public class scheduler {
 		lifeguardList.add(guard);
 	}
 	
+	public static lifeguard nextElement(List<lifeguard> list,lifeguard element){
+		int index = list.indexOf(element)+1;
+		if(index == list.size()) {
+			lifeguard guardNext = list.get(0);
+			return guardNext;
+		}
+	    lifeguard guardNext = list.get(index);
+	    return guardNext;
+
+	}
+	
 	public void generateSchedule(){
 		
 		for(lifeguard l : this.lifeguardList) {
@@ -45,16 +56,30 @@ public class scheduler {
     }
 }
 		 */
-		//ListIterator<lifeguard> iter = lifeguardList.listIterator();
+		ListIterator<lifeguard> iter = lifeguardList.listIterator();
 			for (days d : this.daysOfWeek) {
 				for (lifeguard l : lifeguardList) {
 					if(d.numGuards < 4) {
-						System.out.println(d.numGuards);
-						d.guardsOnDay.add(l);
-						System.out.println(l.name);
-						l.numDays++;
-						d.numGuards++;
-					}					
+						if(l.numDays < 5) {
+							if(!(d.guardsOnDay.contains(l)) && d.numGuards < 4) {
+								if(nextElement(lifeguardList, l).numDays < l.numDays && d.numGuards < 4) {
+									d.guardsOnDay.add(nextElement(lifeguardList, l));
+									nextElement(lifeguardList, l).numDays++;
+									d.numGuards++;
+								
+								}
+								else {
+									if(d.numGuards < 4) {
+										//System.out.println(d.numGuards);
+										d.guardsOnDay.add(l);
+										//System.out.println(l.name);
+										l.numDays++;
+										d.numGuards++;
+									}
+								}
+							}
+						}
+					}
 				
 				}
 			System.out.println("Day of Week: " + d.name);
@@ -75,9 +100,9 @@ public class scheduler {
 		schedule.lifeguardList.add(new lifeguard("four"));
 		schedule.lifeguardList.add(new lifeguard("five"));
 		schedule.lifeguardList.add(new lifeguard("six"));
-		schedule.lifeguardList.add(new lifeguard("seven"));
-		schedule.lifeguardList.add(new lifeguard("eight"));
-		schedule.lifeguardList.add(new lifeguard("nine"));
+		//schedule.lifeguardList.add(new lifeguard("seven"));
+		//schedule.lifeguardList.add(new lifeguard("eight"));
+		//schedule.lifeguardList.add(new lifeguard("nine"));
 		schedule.generateSchedule();
 		}
 
