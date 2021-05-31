@@ -16,7 +16,6 @@ public class days {
 		this.guardsOnDay = new ArrayList<lifeguard>();
 		this.managerOn = false;
 		this.gate = false;
-		this.managerOn = false;
 	}
 	
 	
