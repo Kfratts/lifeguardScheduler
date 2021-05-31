@@ -2,7 +2,6 @@ package lifeguardScheduler;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.ListIterator;
 
 public class scheduler {
 	List<lifeguard> lifeguardList;
@@ -47,34 +46,26 @@ public class scheduler {
 			l.checkAvailability();
 			System.out.println(l.name + " is not available on these days: " + l.daysNotAvailable);
 		}
-		/*
-		 * 
-		 * ListIterator<Book> iter = books.listIterator();
-		while(iter.hasNext()){
-    		if(iter.next().getIsbn().equals(isbn)){
-        		iter.remove();
-    }
-}
-		 */
-		ListIterator<lifeguard> iter = lifeguardList.listIterator();
+		
 			for (days d : this.daysOfWeek) {
 				for (lifeguard l : lifeguardList) {
 					if(d.numGuards < 4) {
 						if(l.numDays < 5) {
-							if(!(d.guardsOnDay.contains(l)) && d.numGuards < 4) {
-								if(nextElement(lifeguardList, l).numDays < l.numDays && d.numGuards < 4) {
-									d.guardsOnDay.add(nextElement(lifeguardList, l));
-									nextElement(lifeguardList, l).numDays++;
-									d.numGuards++;
-								
-								}
-								else {
-									if(d.numGuards < 4) {
-										//System.out.println(d.numGuards);
-										d.guardsOnDay.add(l);
-										//System.out.println(l.name);
-										l.numDays++;
+							if(!(l.daysNotAvailable.contains(d.name))) {
+								if(!(d.guardsOnDay.contains(l)) && d.numGuards < 4) {
+									if(nextElement(lifeguardList, l).numDays < l.numDays && d.numGuards < 4) {
+										d.guardsOnDay.add(nextElement(lifeguardList, l));
+										nextElement(lifeguardList, l).numDays++;
 										d.numGuards++;
+									}
+									else {
+										if(d.numGuards < 4) {
+											//System.out.println(d.numGuards);
+											d.guardsOnDay.add(l);
+											//System.out.println(l.name);
+											l.numDays++;
+											d.numGuards++;
+										}
 									}
 								}
 							}
