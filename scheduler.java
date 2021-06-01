@@ -24,37 +24,8 @@ public class scheduler {
 		
 		System.out.println("Enter the end date then press enter: "); 
 		end = s.nextInt(); 
-		
-	
-		//Adds members to lifeguard list
-		System.out.println("Add lifeguards who will be working for given date range, tap enter when done."); 
-		while(s.hasNextLine())
-		{
-			System.out.print("Add lifeguard: "); 
-			schedule.addLifeguard(s.nextLine());
-			System.out.println("What dates can " + schedule.getLifeguard(schedule.getLifeguardsSize() - 1) + " not work?"); 
-			schedule.getLifeguard(schedule.getLifeguardsSize() -1).addAvailability(); 
-
-		}
-		
-/*		//Adds members to senior guards list
-		System.out.println("Add Senior Guards who will be working for given date range, tap enter when done."); 
-		while(s.hasNextLine())
-		{
-			schedule.seniorGuards.add(new seniorGuard(s.next()));
-		}
-
-		//Adds members to gate list
-		System.out.println("Add gate guards who will be working for given date range, tap enter when done."); 
-		while(s.hasNextLine())
-		{
-			schedule.gateGuards.add(new gateGuard(s.next()));
-		}
-
-		
-		//schedule.generateSchedule(start, end);
-		}
-*/
+		employeeFile.createFileAndInitialize();
+		s.close();
 	}
 }
 
