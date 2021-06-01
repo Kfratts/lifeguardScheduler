@@ -1,12 +1,7 @@
 package lifeguardScheduler;
 
-public class headGuard {
-	String name;
-	String[] daysNotAvailable;
+public class headGuard extends Employee{
 	
-	public headGuard(String name) {
-		this.name = name;
-	}
-	
+	public headGuard(String name) { super(name); }
 	
 }

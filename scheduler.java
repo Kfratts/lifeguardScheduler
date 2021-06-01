@@ -1,31 +1,32 @@
 package lifeguardScheduler;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*; 
 
+//Scheduler should just take in the list of all the worker, then randomly add the people to the day and make sure no one is going overtime.  
+//Should ask how many people should be on for a specific day
+//Should probabbly go by date.  Allow the user to go from a specific time range they choose, so they can schedule people for what they have info for.  
+
+//generates the schedule
 public class scheduler {
-	List<lifeguard> lifeguardList;
-	List<seniorGuard> seniorGuards;
-	List<gate> gate;
-	manager manager;
-	headGuard headGuard;
-	asstManager asstManager;
-	days[] daysOfWeek;
+	private static List<lifeguard> lifeguards;
+	private List<seniorGuard> seniorGuards;
+	private List<gateGuard> gateGuards;
+	private manager manager;
+	private headGuard headGuard;
+	private	asstManager asstManager;
+	private day[] daysOfWeek;
 	
 	public scheduler() {
 		new ArrayList<String>();
 		this.asstManager = new asstManager("Alexis");
-		this.gate = new ArrayList<gate>();
+		this.gateGuards = new ArrayList<gateGuard>();
 		this.headGuard = new headGuard("Cameron");
-		this.lifeguardList = new ArrayList<lifeguard>();
+		this.lifeguards = new ArrayList<lifeguard>();
 		this.seniorGuards = new ArrayList<seniorGuard>();
 		this.manager = new manager("Luke");
-		this.daysOfWeek = new days[]{new days("Monday"), new days("Tuesday"), new days("Wednesday"), new days("Thursday"), new days("Friday"), new days("Saturday"), new days("Sunday")};
+		this.daysOfWeek = new day[]{new day("Monday"), new day("Tuesday"), new day("Wednesday"), new day("Thursday"), new day("Friday"), new day("Saturday"), new day("Sunday")};
 	}
 	
-	//public void addGuards(lifeguard guard) {
-		//lifeguardList.add(guard);
-	//}
 	/*
 	 * Returns the next element in the lifeguard list. 
 	 * @param list: lifeguards list
@@ -64,13 +65,13 @@ public class scheduler {
 	 * @param element: element in list that will be used as the index for next element
 	 * @return guardNext: returns next element in the list
 	 */
-	public static gate nextElementGate(List<gate> list, gate element){
+	public static gateGuard nextElementGate(List<gateGuard> list, gateGuard element){
 		int index = list.indexOf(element)+1;
 		if (index == list.size()) {
-			gate next = list.get(0);
+			gateGuard next = list.get(0);
 			return next;
 		}
-		gate next = list.get(index);
+		gateGuard next = list.get(index);
 		return next;
 		
 	}
@@ -79,11 +80,11 @@ public class scheduler {
 	 * @param None
 	 * @return None
 	 */
-	public void generateSchedule(){
+	/*public void generateSchedule(){
 		//check availability of lifeguards, senior guards, and gate personell
-		for(lifeguard l : this.lifeguardList) {
+		for(lifeguard l : this.lifeguards) {
 			l.checkAvailability();
-			System.out.println(l.name + " is not available on these days: " + l.daysNotAvailable);
+			System.out.println(l.getName() + " is not available on these days: " + l.getDaysNotAvailable());
 		}
 		for(seniorGuard sg : this.seniorGuards) {
 			sg.SGcheckAvailability();
@@ -181,27 +182,59 @@ public class scheduler {
 				}
 			}
 		}
+		*/ 
+	
+	public void generateSchedule(int beg, int end) {
+		
+	}
 		
 		
 	
 	
 	public static void main(String[] args) {
+		int start, end; 
+
+		Scanner s = new Scanner(System.in); 
+		Scanner d = new Scanner(System.in);
+		
 		scheduler schedule = new scheduler();
-		schedule.lifeguardList.add(new lifeguard("one"));
-		schedule.lifeguardList.add(new lifeguard("two"));
-		schedule.lifeguardList.add(new lifeguard("three"));
-		schedule.lifeguardList.add(new lifeguard("four"));
-		schedule.lifeguardList.add(new lifeguard("five"));
-		schedule.lifeguardList.add(new lifeguard("six"));
-		schedule.seniorGuards.add(new seniorGuard("SG ONE"));
-		schedule.seniorGuards.add(new seniorGuard("SG TWO"));
-		schedule.seniorGuards.add(new seniorGuard("SG THREE"));
-		schedule.gate.add(new gate("Gate ONE"));
-		schedule.gate.add(new gate("Gate TWO"));
-		//schedule.lifeguardList.add(new lifeguard("seven"));
-		//schedule.lifeguardList.add(new lifeguard("eight"));
-		//schedule.lifeguardList.add(new lifeguard("nine"));
-		schedule.generateSchedule();
+		
+		//Sets up the start and end date the schedule will be made from
+		System.out.println("What dates would you like to make the schedule from? "
+				+ "\nDo not go past the last day of the month for the range(i.e do not input 28 to the 5)"
+				+ "\nEnter the start date then press enter: ");
+		start = s.nextInt();
+		
+		System.out.println("Enter the end date then press enter: "); 
+		end = s.nextInt(); 
+		
+	
+		//Adds members to lifeguard list
+		System.out.println("Add lifeguards who will be working for given date range, tap enter when done."); 
+		while(s.hasNextLine())
+		{
+			System.out.println("Add lifeguard: "); 
+			schedule.lifeguards.add(new lifeguard(s.nextLine()));
+			lifeguards.get(lifeguards.size()-1).addAvailability();
+			
+		}
+		
+		//Adds members to senior guards list
+		System.out.println("Add Senior Guards who will be working for given date range, tap enter when done."); 
+		while(s.hasNextLine())
+		{
+			schedule.seniorGuards.add(new seniorGuard(s.next()));
+		}
+
+		//Adds members to gate list
+		System.out.println("Add gate guards who will be working for given date range, tap enter when done."); 
+		while(s.hasNextLine())
+		{
+			schedule.gateGuards.add(new gateGuard(s.next()));
+		}
+
+		
+		//schedule.generateSchedule(start, end);
 		}
 
 	}

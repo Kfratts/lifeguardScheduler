@@ -1,13 +1,8 @@
 package lifeguardScheduler;
 
-public class asstManager {
-	String name;
-	String[] daysNotAvailable;
-	
-	
-	public asstManager(String name) {
-		this.name = name;
-	}
+public class asstManager extends Employee {
+
+	public asstManager(String name) { super(name); }
 	
 	
 }
