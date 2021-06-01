@@ -25,6 +25,7 @@ public class scheduler {
 		System.out.println("Enter the end date then press enter: "); 
 		end = s.nextInt(); 
 		employeeFile.createFileAndInitialize();
+		
 		s.close();
 	}
 }
