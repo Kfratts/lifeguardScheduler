@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -37,8 +38,16 @@ public class GUI{
        JFrame frame = new JFrame("Lifeguard Scheduler");
        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        frame.setSize(700,700);
-       JButton button = new JButton("Add Lifeguards");
-       frame.getContentPane().add(button); // Adds Button to content pane of frame
+       JTextArea lifeguards = new JTextArea(10, 10);
+       JTextField lifeguardTitle = new JTextField("Lifeguard List:"); 
+       frame.add(lifeguardTitle, BorderLayout.PAGE_START); 
+       frame.add(lifeguards, BorderLayout.LINE_START); //Adds the lifeguard list to the left side
+      
+       //Saves the lifeguards in the list to a file
+       JButton save = new JButton("Save Lifeguard List");
+       frame.add(save, BorderLayout.PAGE_END);
+       
        frame.setVisible(true);
+       
     }
 }
