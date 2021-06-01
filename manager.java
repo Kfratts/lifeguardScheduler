@@ -1,6 +1,6 @@
 package lifeguardScheduler;
 
-public class manager extends Employee{
+public class manager extends employee{
 	
 	public manager(String name) { super(name); }
 	

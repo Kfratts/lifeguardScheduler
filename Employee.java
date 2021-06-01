@@ -3,12 +3,12 @@ package lifeguardScheduler;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Employee {
+public class employee {
 	private String name;
 	private ArrayList<Integer> daysNotAvailable;
 	private Integer numDays;
 
-	public Employee(String name) {
+	public employee(String name) {
 		this.name = name;
 		this.daysNotAvailable = new ArrayList<Integer>();
 		this.numDays = 0;
