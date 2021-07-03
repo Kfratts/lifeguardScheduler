@@ -1,77 +1,34 @@
 package lifeguardScheduler;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
+
 
 public class schedule {
-	private static List<lifeguard> lifeguards;
+	static List<lifeguard> lifeguards;
 	private List<seniorGuard> seniorGuards;
 	private List<gateGuard> gateGuards;
+	private List<grounds> grounds;
 	private manager manager;
 	private headGuard headGuard;
 	private	asstManager asstManager;
-	private day[] daysOfWeek;
+	List<day> daysInPeriod;
 	
 	public schedule() {
-		new ArrayList<String>();
+		this.daysInPeriod = new ArrayList<day>();
 		this.asstManager = new asstManager("Alexis");
 		this.gateGuards = new ArrayList<gateGuard>();
 		this.headGuard = new headGuard("Cameron");
-		this.lifeguards = new ArrayList<lifeguard>();
+		schedule.lifeguards = new ArrayList<lifeguard>();
 		this.seniorGuards = new ArrayList<seniorGuard>();
 		this.manager = new manager("Luke");
-		this.daysOfWeek = new day[]{new day("Monday"), new day("Tuesday"), new day("Wednesday"), new day("Thursday"), new day("Friday"), new day("Saturday"), new day("Sunday")};
 	}
 
-	
-	/*
-	 * Returns the next element in the lifeguard list. 
-	 * @param list: lifeguards list
-	 * @param element: element in list that will be used as the index for next element
-	 * @return guardNext: returns next element in the list
-	 */
-	public static lifeguard nextElement(List<lifeguard> list,lifeguard element){
-		int index = list.indexOf(element)+1;
-		if(index == list.size()) {
-			lifeguard guardNext = list.get(0);
-			return guardNext;
-		}
-	    lifeguard guardNext = list.get(index);
-	    return guardNext;
-
-	}
-	/*
-	 * Returns the next element in the senior guards list. 
-	 * @param list: senior guards list
-	 * @param element: element in list that will be used as the index for next element
-	 * @return guardNext: returns next element in the list
-	 */
-	public static seniorGuard nextElementSG(List<seniorGuard> list,seniorGuard element){
-		int index = list.indexOf(element)+1;
-		if(index == list.size()) {
-			seniorGuard guardNext = list.get(0);
-			return guardNext;
-		}
-	    seniorGuard guardNext = list.get(index);
-	    return guardNext;
-
-	}
-	/*
-	 * Returns the next element in the gate list. 
-	 * @param list: gate list
-	 * @param element: element in list that will be used as the index for next element
-	 * @return guardNext: returns next element in the list
-	 */
-	public static gateGuard nextElementGate(List<gateGuard> list, gateGuard element){
-		int index = list.indexOf(element)+1;
-		if (index == list.size()) {
-			gateGuard next = list.get(0);
-			return next;
-		}
-		gateGuard next = list.get(index);
-		return next;
-		
-	}
 	/*
 	 * Generates Schedule and ensures the correct number of lifeguards, senior guards, head guard, manager, asst manager, grounds personnel are on duty.
 	 * @param None
@@ -179,17 +136,161 @@ public class schedule {
 				}
 			}
 		}
-		*/ 
+		* 
+	*/
 	
+	public void checkAvailability(String filePath) throws FileNotFoundException {
+		File file = new File(filePath);
+		for(lifeguard l : schedule.lifeguards) {
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			while(s.hasNextLine()) {
+				String token = s.nextLine();
+				if(token.contains(l.getName())) {
+					String days = token.substring(token.indexOf("|") + 1);
+					days.replaceAll("\\s","");
+					List<String> tempDays = Arrays.asList(days.split("\\s*,\\s*"));
+					List<day> dayList = new ArrayList<day>();
+					for(String day : tempDays) {
+						String tempDay = day.replaceAll("\\s","");
+						dayList.add(new day(Integer.parseInt(tempDay)));
+					}
+					l.daysNotAvailable = dayList;
+					dayList = null;
+				}
+			}
+			s.close();
+		}
+	}
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public static lifeguard getGuard(int num) {
+		int min = 10;
+		int indexTemp = 0;
+		int index = 0;
+		boolean check = false;
+		
+		for(lifeguard l : lifeguards) {
+			//System.out.println(lifeguards.get(index).name);
+			ArrayList<lifeguard> lg = new ArrayList<lifeguard>();
+			for(day d : l.daysNotAvailable) {
+				if(d.name== num) {
+					check = true;
+				}
+			}
+			Integer numDaysTemp = l.numDays;
+			if(numDaysTemp < min && check == false) {
+				min = numDaysTemp;
+				index = indexTemp;
+			}
+			indexTemp++;
+			check = false;
+		}
+		lifeguards.get(index).numDays++;
+		return lifeguards.get(index);
+	}
+	
+	@SuppressWarnings("unlikely-arg-type")
 	public void generateSchedule(int beg, int end) {
-		
+		//begin = 1
+		//end = 14
+		ArrayList<day> days = new ArrayList<day>();
+		for(int i = beg; i < end; i++) {
+			day dayOfWeek = new day(i);
+			days.add(dayOfWeek);
+		}
+
+		this.daysInPeriod = days;
+		for(day d : this.daysInPeriod) {
+			for (lifeguard l : this.lifeguards) {
+				if(d.numGuards < 4) {
+					if(l.numDays < 10) {
+						if(!(l.daysNotAvailable.contains(d.name))) {
+							if(!(d.guardsOnDay.contains(l)) && d.numGuards < 4) {
+								if(d.numGuards < 4) {
+									d.guardsOnDay.add(schedule.getGuard(d.name));
+									
+									d.numGuards++;
+								}
+								else {
+									if(d.numGuards < 4) {
+										//System.out.println(d.numGuards);
+										d.guardsOnDay.add(schedule.getGuard(d.name));
+										//System.out.println(l.name);
+										
+										d.numGuards++;
+									}
+								}
+							}
+						}
+					}
+				}
+			
+			}
+		}
 	}
-		
-	//add and setter methods
 	
-	public void addLifeguard(String name) {
-		lifeguards.add(new lifeguard(name)); 
+	public void createEmployeeLists() {
+		//creating lifeguard Array
+		List<String> lifeguardList = new ArrayList<String>();
+		lifeguardList = employeeFile.getLifeguards("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		List<lifeguard> guardList = new ArrayList<lifeguard>();
+		for(String guard : lifeguardList) {
+			try {
+			guard = guard.substring(0, guard.indexOf("|"));
+			}catch(Exception e) {
+			guardList.add(new lifeguard(guard));
+			}
+			guardList.add(new lifeguard(guard));
+		}
+		
+		schedule.lifeguards = guardList;
+		
+		
+		
+		List<String> SGList = new ArrayList<String>();
+		SGList = employeeFile.getSeniorGuards("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		
+		List<seniorGuard> sgList = new ArrayList<seniorGuard>();
+		for (String sg : SGList) {
+			try {
+				sg = sg.substring(0, sg.indexOf("|"));
+			}catch(Exception e) {
+				sgList.add(new seniorGuard(sg));
+			}
+			
+			sgList.add(new seniorGuard(sg));
+		}
+		this.seniorGuards = sgList;
+		
+		List<String> gate = new ArrayList<String>();
+		gate = employeeFile.getGate("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		List<gateGuard> gateList = new ArrayList<gateGuard>();
+		for(String g : gate) {
+			try {
+			g = g.substring(0, g.indexOf("|"));
+			}catch(Exception e) {
+				gateList.add(new gateGuard(g));
+			}
+			gateList.add(new gateGuard(g));
+		}
+		this.gateGuards = gateList;
+ 
+		List<String> grounds = new ArrayList<String>();
+		grounds = employeeFile.getGround("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		List<grounds> groundsList = new ArrayList<grounds>();
+		for(String g : grounds) {
+			try {
+				g = g.substring(0, g.indexOf("|"));
+			} catch(Exception e){
+				groundsList.add(new grounds(g));
+			}
+			groundsList.add(new grounds(g));
+		}
+		this.grounds = groundsList;
+		
 	}
+	
+	
 	
 	
 	//getter methods

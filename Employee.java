@@ -1,16 +1,17 @@
 package lifeguardScheduler;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class employee {
-	private String name;
-	private ArrayList<Integer> daysNotAvailable;
-	private Integer numDays;
+	String name;
+	List<day> daysNotAvailable;
+	Integer numDays;
 
 	public employee(String name) {
 		this.name = name;
-		this.daysNotAvailable = new ArrayList<Integer>();
+		this.daysNotAvailable = new ArrayList<day>();
 		this.numDays = 0;
 	}
 
@@ -27,7 +28,9 @@ public class employee {
 	public String getName() {
 		return this.name;
 	}
-
+	public int getNumDays() {
+		return this.numDays;
+	}
 	public Integer getDaysOn() {
 		return this.numDays;
 	}

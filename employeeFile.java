@@ -7,20 +7,18 @@ import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.awt.Desktop;  
 
-
-
-
 public class employeeFile {
 	public static void createFileAndInitialize(){
 		try {
-			File file = new File("C:\\Users\\18452\\cs140\\eclipse\\cs140\\src\\lifeguardScheduler\\employeeFiles\\employee.text");
+			File file = new File("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
 			if(file.exists()) {
 				System.out.println("File already exists, would you like to edit this file?");
 				System.out.println("If so, type 'yes', if not then type 'no'");
+				@SuppressWarnings("resource")
 				Scanner s = new Scanner(System.in); 
 				String answer = s.nextLine(); 
 				if(answer.toUpperCase().equals("YES")) {
-					employeeFile.editFile("C:\\Users\\18452\\cs140\\eclipse\\cs140\\src\\lifeguardScheduler\\employeeFiles\\employee.text");
+					employeeFile.editFile("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
 				}
 			}
 			else {
@@ -104,5 +102,163 @@ public class employeeFile {
 				e.printStackTrace();
 			}
 		}
+	public static List<String> getLifeguards(String filePath) {
+		File file = new File(filePath);
+		List<String> guardList = new ArrayList<String>();
+		try {
+			@SuppressWarnings("resource")
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			String token;
+			//List<String> lifeguardList = new ArrayList<String>();
+			List<String> temp = new ArrayList<String>();
+			while(s.hasNextLine()) {
+				token = s.nextLine().trim();
+				if (token.contains("SENIOR GUARDS:")) {
+					break;
+				}
+				temp.add(token);
+					
+			}
+			guardList = temp;
+		} catch(Exception e){
+			System.out.println("Error getting file!");
+		}
+		for (Iterator<String> iterator = guardList.iterator(); iterator.hasNext();) {
+		    String sNext = iterator.next();
+		    if(sNext == "") {
+		        iterator.remove();
+		    }
+		    if(sNext.endsWith(":")) {
+		    	iterator.remove();
+		    }
+		    if(sNext.contains("|")) {
+		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
+		    }
+		}
+		System.out.println("Size is " + guardList.size());
+		return guardList;
+	}
+	
+	public static List<String> getSeniorGuards(String filePath) {
+		File file = new File(filePath);
+		List<String> guardList = new ArrayList<String>();
+		try {
+			@SuppressWarnings("resource")
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			String token;
+			List<String> temp = new ArrayList<String>();
+			while(s.hasNextLine()) {
+				token = s.nextLine().trim();
+				if (token.contains("SENIOR GUARDS:")) {
+					while(s.hasNextLine()) {
+						if (token.contains("GATE")) {
+							break;
+						}
+						token = s.nextLine().trim();
+						temp.add(token);
+					}
+				}
+					
+			}
+			guardList = temp;
+		} catch(Exception e){
+			System.out.println("Error getting file!");
+		}
+		for (Iterator<String> iterator = guardList.iterator(); iterator.hasNext();) {
+		    String sNext = iterator.next();
+		    if(sNext == "") {
+		        iterator.remove();
+		    }
+		    if(sNext.endsWith(":")) {
+		    	iterator.remove();
+		    }
+		    if(sNext.contains("|")) {
+		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
+		    }
+		}
+		System.out.println("Size is " + guardList.size());
+		return guardList;
+	}
+	
+	public static List<String> getGate(String filePath) {
+		File file = new File(filePath);
+		List<String> gate = new ArrayList<String>();
+		try {
+			@SuppressWarnings("resource")
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			String token;
+			List<String> temp = new ArrayList<String>();
+			while(s.hasNextLine()) {
+				token = s.nextLine().trim();
+				if (token.contains("GATE")) {
+					while(s.hasNextLine()) {
+						if (token.contains("GROUNDS")) {
+							break;
+						}
+						token = s.nextLine().trim();
+						temp.add(token);
+					}
+				}
+					
+			}
+			gate = temp;
+		} catch(Exception e){
+			System.out.println("Error getting file!");
+		}
+		for (Iterator<String> iterator = gate.iterator(); iterator.hasNext();) {
+		    String sNext = iterator.next();
+		    if(sNext == "") {
+		        iterator.remove();
+		    }
+		    if(sNext.endsWith(":")) {
+		    	iterator.remove();
+		    }
+		    if(sNext.contains("|")) {
+		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
+		    }
+		}
+		System.out.println("Size is " + gate.size());
+		return gate;
+	}
+	
+	public static List<String> getGround(String filePath) {
+		File file = new File(filePath);
+		List<String> ground = new ArrayList<String>();
+		try {
+			@SuppressWarnings("resource")
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			String token;
+			List<String> temp = new ArrayList<String>();
+			while(s.hasNextLine()) {
+				token = s.nextLine().trim();
+				if (token.contains("GROUNDS")) {
+					while(s.hasNextLine()) {
+						token = s.nextLine().trim();
+						temp.add(token);
+					}
+				}
+					
+			}
+			ground = temp;
+		} catch(Exception e){
+			System.out.println("Error getting file!");
+		}
+		for (Iterator<String> iterator = ground.iterator(); iterator.hasNext();) {
+		    String sNext = iterator.next();
+		    if(sNext == "") {
+		        iterator.remove();
+		    }
+		    if(sNext.endsWith(":")) {
+		    	iterator.remove();
+		    }
+		    if(sNext.contains("|")) {
+		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
+		    }
+		}
+		//System.out.println("Size is " + ground.size());
+		return ground;
+	}
+	
+	
 }
 

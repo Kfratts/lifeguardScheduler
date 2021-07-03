@@ -1,13 +1,9 @@
 package lifeguardScheduler;
 
+import java.io.FileNotFoundException;
 import java.util.*; 
 
 public class scheduler {
-	
-
-	
-	
-	
 	
 	public static void main(String[] args) {
 		int start, end; 
@@ -25,8 +21,26 @@ public class scheduler {
 		System.out.println("Enter the end date then press enter: "); 
 		end = s.nextInt(); 
 		employeeFile.createFileAndInitialize();
+		schedule.createEmployeeLists();
+		//schedule.generateSchedule(start, end);
+		try {
+			schedule.checkAvailability("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		} catch (FileNotFoundException e) {
+			System.out.println("ERROR");
+			e.printStackTrace();
+		}
+		schedule.generateSchedule(start, end);
+		System.out.println(schedule.daysInPeriod);
+		for(day d : schedule.daysInPeriod) {
+			System.out.println(d.numGuards);
+			for (lifeguard l : d.guardsOnDay) {
+				System.out.println(l.name);
+			}
+		}
+		
 		
 		s.close();
+		System.out.println("DONE");
 	}
 }
 
