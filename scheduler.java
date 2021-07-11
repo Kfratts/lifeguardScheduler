@@ -14,12 +14,24 @@ public class scheduler {
 		
 		//Sets up the start and end date the schedule will be made from
 		System.out.println("What dates would you like to make the schedule from? "
-				+ "\nDo not go past the last day of the month for the range(i.e do not input 28 to the 5)"
-				+ "\nEnter the start date then press enter: ");
+				+ "\n Please enter the month of the starting date (Example: June");
+		String startMonth = s.nextLine();
+		
+		System.out.println("Please enter the day (Exmaple: 21");
+		
 		start = s.nextInt();
 		
-		System.out.println("Enter the end date then press enter: "); 
+		System.out.println("Please enter the day for the end period");
+		
 		end = s.nextInt(); 
+		for(gateGuard g : schedule.gateGuards) {
+			System.out.println("IN LOOP");
+			System.out.println(g.name);
+		}
+		for(day d : schedule.daysInPeriod) {
+			System.out.println(d.name);
+		}
+		
 		employeeFile.createFileAndInitialize();
 		schedule.createEmployeeLists();
 		//schedule.generateSchedule(start, end);
@@ -29,13 +41,24 @@ public class scheduler {
 			System.out.println("ERROR");
 			e.printStackTrace();
 		}
-		schedule.generateSchedule(start, end);
+		schedule.generateSchedule(start, end, startMonth);
 		System.out.println(schedule.daysInPeriod);
 		for(day d : schedule.daysInPeriod) {
-			System.out.println(d.numGuards);
+			System.out.println(d.name);
+			System.out.println("---------------------");
+			System.out.println("LIFEGUARDS:");
 			for (lifeguard l : d.guardsOnDay) {
 				System.out.println(l.name);
 			}
+			System.out.println("SENIOR GUARDS:");
+			for (seniorGuard sg : d.sgOnDay) {
+				System.out.println(sg.name);
+			}
+			System.out.println("GATE:");
+			for (gateGuard g : d.gateOnDay) {
+				System.out.println(g.name);
+			}
+			System.out.println("---------------------");
 		}
 		
 		

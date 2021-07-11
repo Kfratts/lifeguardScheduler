@@ -11,9 +11,9 @@ import java.util.Scanner;
 
 public class schedule {
 	static List<lifeguard> lifeguards;
-	private List<seniorGuard> seniorGuards;
-	private List<gateGuard> gateGuards;
-	private List<grounds> grounds;
+	static List<seniorGuard> seniorGuards;
+	static List<gateGuard> gateGuards;
+	private static List<grounds> grounds;
 	private manager manager;
 	private headGuard headGuard;
 	private	asstManager asstManager;
@@ -22,10 +22,10 @@ public class schedule {
 	public schedule() {
 		this.daysInPeriod = new ArrayList<day>();
 		this.asstManager = new asstManager("Alexis");
-		this.gateGuards = new ArrayList<gateGuard>();
+		schedule.gateGuards = new ArrayList<gateGuard>();
 		this.headGuard = new headGuard("Cameron");
 		schedule.lifeguards = new ArrayList<lifeguard>();
-		this.seniorGuards = new ArrayList<seniorGuard>();
+		schedule.seniorGuards = new ArrayList<seniorGuard>();
 		this.manager = new manager("Luke");
 	}
 
@@ -160,9 +160,65 @@ public class schedule {
 			}
 			s.close();
 		}
+		for(seniorGuard sg : schedule.seniorGuards) {
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			while(s.hasNextLine()) {
+				String token = s.nextLine();
+				if(token.contains(sg.getName())){
+					String days = token.substring(token.indexOf("|") + 1);
+					days.replaceAll("\\s","");
+					List<String> tempDays = Arrays.asList(days.split("\\s*,\\s*"));
+					List<day> dayList = new ArrayList<day>();
+					for(String day : tempDays) {
+						String tempDay = day.replaceAll("\\s","");
+						dayList.add(new day(Integer.parseInt(tempDay)));
+					}
+					sg.daysNotAvailable = dayList;
+					dayList = null;
+				}
+			}
+			s.close();
+		}
+		for(gateGuard g : schedule.gateGuards) {
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			while(s.hasNextLine()) {
+				String token = s.nextLine();
+				if(token.contains(g.getName())){
+					String days = token.substring(token.indexOf("|") + 1);
+					days.replaceAll("\\s","");
+					List<String> tempDays = Arrays.asList(days.split("\\s*,\\s*"));
+					List<day> dayList = new ArrayList<day>();
+					for(String day : tempDays) {
+						String tempDay = day.replaceAll("\\s","");
+						dayList.add(new day(Integer.parseInt(tempDay)));
+					}
+					g.daysNotAvailable = dayList;
+					dayList = null;
+				}
+			}
+			s.close();
+		}
+		for(grounds g : schedule.grounds) {
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			while(s.hasNextLine()) {
+				String token = s.nextLine();
+				if(token.contains(g.getName())){
+					String days = token.substring(token.indexOf("|") + 1);
+					days.replaceAll("\\s","");
+					List<String> tempDays = Arrays.asList(days.split("\\s*,\\s*"));
+					List<day> dayList = new ArrayList<day>();
+					for(String day : tempDays) {
+						String tempDay = day.replaceAll("\\s","");
+						dayList.add(new day(Integer.parseInt(tempDay)));
+					}
+					g.daysNotAvailable = dayList;
+					dayList = null;
+				}
+			}
+			s.close();
+		}
 	}
 	
-	@SuppressWarnings("unlikely-arg-type")
 	public static lifeguard getGuard(int num) {
 		int min = 10;
 		int indexTemp = 0;
@@ -170,8 +226,6 @@ public class schedule {
 		boolean check = false;
 		
 		for(lifeguard l : lifeguards) {
-			//System.out.println(lifeguards.get(index).name);
-			ArrayList<lifeguard> lg = new ArrayList<lifeguard>();
 			for(day d : l.daysNotAvailable) {
 				if(d.name== num) {
 					check = true;
@@ -188,20 +242,98 @@ public class schedule {
 		lifeguards.get(index).numDays++;
 		return lifeguards.get(index);
 	}
+	public static seniorGuard getSeniorGuard(int num) {
+		int min = 10;
+		int indexTemp = 0;
+		int index = 0;
+		boolean check = false;
+		
+		for(seniorGuard sg : seniorGuards) {
+			for(day d : sg.daysNotAvailable) {
+				if(d.name== num) {
+					check = true;
+				}
+			}
+			Integer numDaysTemp = sg.numDays;
+			if(numDaysTemp < min && check == false) {
+				min = numDaysTemp;
+				index = indexTemp;
+			}
+			indexTemp++;
+			check = false;
+		}
+		seniorGuards.get(index).numDays++;
+		return seniorGuards.get(index);
+	}
+	
+	public static gateGuard getGateGuard(int num) {
+		int min = 10;
+		int indexTemp = 0;
+		int index = 0;
+		boolean check = false;
+		
+		for(gateGuard g : gateGuards) {
+			for(day d : g.daysNotAvailable) {
+				if(d.name== num) {
+					check = true;
+				}
+			}
+			Integer numDaysTemp = g.numDays;
+			if(numDaysTemp < min && check == false) {
+				min = numDaysTemp;
+				index = indexTemp;
+			}
+			indexTemp++;
+			check = false;
+		}
+		gateGuards.get(index).numDays++;
+		return gateGuards.get(index);
+	}
 	
 	@SuppressWarnings("unlikely-arg-type")
-	public void generateSchedule(int beg, int end) {
-		//begin = 1
-		//end = 14
-		ArrayList<day> days = new ArrayList<day>();
-		for(int i = beg; i < end; i++) {
-			day dayOfWeek = new day(i);
-			days.add(dayOfWeek);
+	public void generateSchedule(int beg, int end, String startMonth) {
+		int numDaysInStart;
+		if (startMonth.toUpperCase().contains("MAY")) {
+			numDaysInStart = 31;
 		}
+		if (startMonth.toUpperCase().contains("JUNE")) {
+			System.out.println("YUP");
+			numDaysInStart = 30;
+		}
+		if (startMonth.toUpperCase().contains("JULY")) {
+			numDaysInStart = 31;
+		}
+		if (startMonth.toUpperCase().contains("AUGUST")) {
+			numDaysInStart = 31;
+		}
+		else{
+			numDaysInStart = 30;
+		}
+		
+		int numDaysInBegMonth = numDaysInStart - beg;
+		System.out.println(numDaysInBegMonth);
+		int numDaysInEndMonth = end - numDaysInBegMonth;
+		if(beg > end) {
+			ArrayList<day> days = new ArrayList<day>();
+			for(int i = beg; i < numDaysInStart; i++) {
+				day dayOfWeek = new day(i);
+				daysInPeriod.add(dayOfWeek);
+			}
+			for(int i = 1; i < end + 1; i++) {
+				day dayOfWeek = new day(i);
+				daysInPeriod.add(dayOfWeek);
+			}
+		}
+		else {
+			for(int i = beg; i <= end - beg + 1; i ++) {
+				day dayofWeek = new day(i);
+				daysInPeriod.add(dayofWeek);
+			}
+		}
+		
 
-		this.daysInPeriod = days;
 		for(day d : this.daysInPeriod) {
-			for (lifeguard l : this.lifeguards) {
+			for (lifeguard l : schedule.lifeguards) {
 				if(d.numGuards < 4) {
 					if(l.numDays < 10) {
 						if(!(l.daysNotAvailable.contains(d.name))) {
@@ -218,6 +350,56 @@ public class schedule {
 										//System.out.println(l.name);
 										
 										d.numGuards++;
+									}
+								}
+							}
+						}
+					}
+				}
+			
+			}
+			for (seniorGuard sg : schedule.seniorGuards) {
+				if(d.numSG < 4) {
+					if(sg.numDays < 10) {
+						if(!(sg.daysNotAvailable.contains(d.name))) {
+							if(!(d.sgOnDay.contains(sg)) && d.numSG < 1) {
+								if(d.numSG < 1) {
+									d.sgOnDay.add(schedule.getSeniorGuard(d.name));
+									
+									d.numSG++;
+								}
+								else {
+									if(d.numSG < 1) {
+										//System.out.println(d.numGuards);
+										d.sgOnDay.add(schedule.getSeniorGuard(d.name));
+										//System.out.println(l.name);
+										
+										d.numGuards++;
+									}
+								}
+							}
+						}
+					}
+				}
+			
+			}
+			for (gateGuard g : schedule.gateGuards) {
+				if(d.numGate < 1) {
+					if(g.numDays < 10) {
+						if(!(g.daysNotAvailable.contains(d.name))) {
+							if(!(d.gateOnDay.contains(g)) && d.numGate < 1) {
+								if(d.numGate < 1) {
+									d.gateOnDay.add(schedule.getGateGuard(d.name));
+									
+									d.numGate++;
+								}
+								else {
+									if(d.numGate < 1) {
+										//System.out.println(d.numGuards);
+										d.gateOnDay.add(schedule.getGateGuard(d.name));
+										//System.out.println(l.name);
+										
+										d.numGate++;
 									}
 								}
 							}
@@ -260,7 +442,7 @@ public class schedule {
 			
 			sgList.add(new seniorGuard(sg));
 		}
-		this.seniorGuards = sgList;
+		schedule.seniorGuards = sgList;
 		
 		List<String> gate = new ArrayList<String>();
 		gate = employeeFile.getGate("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
@@ -273,7 +455,7 @@ public class schedule {
 			}
 			gateList.add(new gateGuard(g));
 		}
-		this.gateGuards = gateList;
+		schedule.gateGuards = gateList;
  
 		List<String> grounds = new ArrayList<String>();
 		grounds = employeeFile.getGround("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
@@ -286,7 +468,7 @@ public class schedule {
 			}
 			groundsList.add(new grounds(g));
 		}
-		this.grounds = groundsList;
+		schedule.grounds = groundsList;
 		
 	}
 	
