@@ -8,9 +8,11 @@ public class day {
 	int numGuards;
 	int numSG;
 	int numGate;
+	int numGuardsPool;
 	List<lifeguard> guardsOnDay;
 	List<seniorGuard> sgOnDay;
 	List<gateGuard> gateOnDay;
+	List<lifeguard> guardsAtPool;
 	
 	
 	public day(int day) {
@@ -20,6 +22,8 @@ public class day {
 		this.sgOnDay = new ArrayList<seniorGuard>();
 		this.gateOnDay = new ArrayList<gateGuard>();
 		this.numGuards = guardsOnDay.size();
+		this.guardsAtPool = new ArrayList<lifeguard>();
+		this.numGuardsPool = guardsAtPool.size();
 	}
 	
 	public void sortLifeguard() {

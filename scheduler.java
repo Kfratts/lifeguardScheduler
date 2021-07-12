@@ -42,6 +42,7 @@ public class scheduler {
 			e.printStackTrace();
 		}
 		schedule.generateSchedule(start, end, startMonth);
+		schedule.generatePoolSchedule();
 		System.out.println(schedule.daysInPeriod);
 		for(day d : schedule.daysInPeriod) {
 			System.out.println(d.name);
@@ -57,6 +58,11 @@ public class scheduler {
 			System.out.println("GATE:");
 			for (gateGuard g : d.gateOnDay) {
 				System.out.println(g.name);
+			}
+			System.out.println("---------------------");
+			System.out.println("POOL:");
+			for(lifeguard lg : d.guardsAtPool) {
+				System.out.println(lg.name);
 			}
 			System.out.println("---------------------");
 		}

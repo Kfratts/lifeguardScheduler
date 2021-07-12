@@ -1,30 +1,30 @@
 LIFEGUARDS:
-l1 | 1
-l2 | 2, 3, 5
-l3 | 2, 6, 7, 9
-l4 | 1, 5, 8
-l5 | 7, 15
-l6 | 8
-l7 | 11
-l8 | 16
-l9 | 17
-l10 |18
-l11 |19
-l12 | 21
+Josh | 1
+Dominic | 2, 3, 5
+Greg | 2, 6, 7, 9
+Steven | 1, 5, 8
+Elli | 7, 15
+Sheena | 8
+KyleSass | 11
+Christie | 16
+Gavin | 17
+Mia |18
+Sophie |19
+Brian | 21
 
 SENIOR GUARDS:
 
-s1 | 0
-s2 | 0
-s3 | 0
+David | 0
+KyleB | 0
+Shannon | 0
 
 GATE GUARDS:
 
-gate1 | 0
-gate2 | 0
+Kenny | 0
+StevenA | 0
 gate3 | 0
 
 GROUNDS:
 
-ground1 | 0 
-ground2 | 0
+Alfonso | 0 
+StevenA | 0

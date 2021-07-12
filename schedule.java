@@ -18,6 +18,7 @@ public class schedule {
 	private headGuard headGuard;
 	private	asstManager asstManager;
 	List<day> daysInPeriod;
+	static List<lifeguard> lifeguardsAtPool;
 	
 	public schedule() {
 		this.daysInPeriod = new ArrayList<day>();
@@ -27,118 +28,9 @@ public class schedule {
 		schedule.lifeguards = new ArrayList<lifeguard>();
 		schedule.seniorGuards = new ArrayList<seniorGuard>();
 		this.manager = new manager("Luke");
+		this.lifeguardsAtPool = new ArrayList<lifeguard>();
 	}
 
-	/*
-	 * Generates Schedule and ensures the correct number of lifeguards, senior guards, head guard, manager, asst manager, grounds personnel are on duty.
-	 * @param None
-	 * @return None
-	 */
-	/*public void generateSchedule(){
-		//check availability of lifeguards, senior guards, and gate personell
-		for(lifeguard l : this.lifeguards) {
-			l.checkAvailability();
-			System.out.println(l.getName() + " is not available on these days: " + l.getDaysNotAvailable());
-		}
-		for(seniorGuard sg : this.seniorGuards) {
-			sg.SGcheckAvailability();
-			System.out.println(sg.name + " is not available on these days: " + sg.daysNotAvailable);
-		}
-		for(gate g : this.gate) {
-			g.checkAvailability();
-			System.out.println(g.name + " is not available on these days: " + g.daysNotAvailable);
-		}
-		
-		
-			for (days d : this.daysOfWeek) { //iterate days of week array
-					for(gate g : this.gate) { //iterate gate personell
-						if(d.numGate < 1) {  //minimum number of gate personell per day is 1
-							if(g.numDays < 4) { //ensure no gate personell works more than 4 days
-								if (!(g.daysNotAvailable.contains(d.name))) { //ensure the gate personell is available at current day
-									if(!(d.gateOnDay.contains(g)) && d.numGate < 1) { //ensure the gate personell was not already added
-										if(nextElementGate(this.gate, g).numDays < g.numDays && d.numGate < 1) { //check to make sure one gate personell isn't working more than another
-											d.gateOnDay.add(nextElementGate(this.gate, g)); //add next gate personell to schedule if they have less days working than the previous gate personell.
-											nextElementGate(this.gate, g).numDays++; //add one to the number of days worked by that gate personell
-											d.numGate++; //add one to the number of gate personell
-										}
-										else {
-											if(d.numSG < 2) {
-												//System.out.println(d.numGuards);
-												d.gateOnDay.add(g);
-												//System.out.println(l.name);
-												g.numDays++;
-												d.numGate++;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					for(seniorGuard sg : seniorGuards) {
-						if(d.numSG < 2) {
-							if(sg.numDays < 5) {
-								if(!(sg.daysNotAvailable.contains(d.name))) {
-									if(!(d.sgOnDay.contains(sg)) && d.numGuards < 2) {
-										if(nextElementSG(seniorGuards, sg).numDays < sg.numDays && d.numSG < 2) {
-											d.sgOnDay.add(nextElementSG(seniorGuards, sg));
-											nextElementSG(seniorGuards, sg).numDays++;
-											d.numSG++;
-										}
-										else {
-											if(d.numSG < 2) {
-												//System.out.println(d.numGuards);
-												d.sgOnDay.add(sg);
-												//System.out.println(l.name);
-												sg.numDays++;
-												d.numSG++;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				for (lifeguard l : lifeguardList) {
-					if(d.numGuards < 4) {
-						if(l.numDays < 5) {
-							if(!(l.daysNotAvailable.contains(d.name))) {
-								if(!(d.guardsOnDay.contains(l)) && d.numGuards < 4) {
-									if(nextElement(lifeguardList, l).numDays < l.numDays && d.numGuards < 4) {
-										d.guardsOnDay.add(nextElement(lifeguardList, l));
-										nextElement(lifeguardList, l).numDays++;
-										d.numGuards++;
-									}
-									else {
-										if(d.numGuards < 4) {
-											//System.out.println(d.numGuards);
-											d.guardsOnDay.add(l);
-											//System.out.println(l.name);
-											l.numDays++;
-											d.numGuards++;
-										}
-									}
-								}
-							}
-						}
-					}
-				
-				}
-				System.out.println("Day of Week: " + d.name);
-				for(lifeguard guard : d.guardsOnDay) {
-					System.out.println("Guards on: " + guard.name);
-				}
-				for(seniorGuard senior : d.sgOnDay) {
-					System.out.println("Senior Guards On: " + senior.name);
-				}
-				for(gate gate : d.gateOnDay) {
-					System.out.println("Gate On: " + gate.name);
-				}
-			}
-		}
-		* 
-	*/
-	
 	public void checkAvailability(String filePath) throws FileNotFoundException {
 		File file = new File(filePath);
 		for(lifeguard l : schedule.lifeguards) {
@@ -239,7 +131,9 @@ public class schedule {
 			indexTemp++;
 			check = false;
 		}
-		lifeguards.get(index).numDays++;
+		lifeguard l = lifeguards.get(index);
+		l.numDays++;
+		l.daysNotAvailable.add(new day(num));
 		return lifeguards.get(index);
 	}
 	public static seniorGuard getSeniorGuard(int num) {
@@ -286,9 +180,16 @@ public class schedule {
 			indexTemp++;
 			check = false;
 		}
+
 		gateGuards.get(index).numDays++;
+		
 		return gateGuards.get(index);
 	}
+	/*
+	 * Generates Schedule and ensures the correct number of lifeguards, senior guards, head guard, manager, asst manager, grounds personnel are on duty.
+	 * @param None
+	 * @return None
+	 */
 	
 	@SuppressWarnings("unlikely-arg-type")
 	public void generateSchedule(int beg, int end, String startMonth) {
@@ -400,6 +301,37 @@ public class schedule {
 										//System.out.println(l.name);
 										
 										d.numGate++;
+									}
+								}
+							}
+						}
+					}
+				}
+			
+			}
+		}
+	}
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public void generatePoolSchedule() {
+		for (day d : daysInPeriod) {
+			for (lifeguard l : schedule.lifeguards) {
+				if(d.numGuardsPool < 3) {
+					if(l.numDays < 10) {
+						if(!(l.daysNotAvailable.contains(d.name))) {
+							if(!(d.guardsAtPool.contains(l)) && d.numGuardsPool < 3) {
+								if(d.numGuardsPool < 3) {
+									d.guardsAtPool.add(schedule.getGuard(d.name));
+									
+									d.numGuardsPool++;
+								}
+								else {
+									if(d.numGuardsPool < 3) {
+										//System.out.println(d.numGuards);
+										d.guardsAtPool.add(schedule.getGuard(d.name));
+										//System.out.println(l.name);
+										
+										d.numGuardsPool++;
 									}
 								}
 							}
