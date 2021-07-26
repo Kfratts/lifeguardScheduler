@@ -17,8 +17,9 @@ public class schedule {
 	private manager manager;
 	private headGuard headGuard;
 	private	asstManager asstManager;
-	List<day> daysInPeriod;
+	static List<day> daysInPeriod;
 	static List<lifeguard> lifeguardsAtPool;
+	static List<poolSeniorGuard> poolSG;
 	
 	public schedule() {
 		this.daysInPeriod = new ArrayList<day>();
@@ -29,6 +30,7 @@ public class schedule {
 		schedule.seniorGuards = new ArrayList<seniorGuard>();
 		this.manager = new manager("Luke");
 		this.lifeguardsAtPool = new ArrayList<lifeguard>();
+		this.poolSG = new ArrayList<poolSeniorGuard>();
 	}
 
 	public void checkAvailability(String filePath) throws FileNotFoundException {
@@ -109,6 +111,25 @@ public class schedule {
 			}
 			s.close();
 		}
+		for(poolSeniorGuard psg : schedule.poolSG) {
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			while(s.hasNextLine()) {
+				String token = s.nextLine();
+				if(token.contains(psg.getName())){
+					String days = token.substring(token.indexOf("|") + 1);
+					days.replaceAll("\\s","");
+					List<String> tempDays = Arrays.asList(days.split("\\s*,\\s*"));
+					List<day> dayList = new ArrayList<day>();
+					for(String day : tempDays) {
+						String tempDay = day.replaceAll("\\s","");
+						dayList.add(new day(Integer.parseInt(tempDay)));
+					}
+					psg.daysNotAvailable = dayList;
+					dayList = null;
+				}
+			}
+			s.close();
+		}
 	}
 	
 	public static lifeguard getGuard(int num) {
@@ -123,6 +144,20 @@ public class schedule {
 					check = true;
 				}
 			}
+			for (day d : schedule.daysInPeriod) {
+				if(d.name == num) {
+					for (lifeguard lg : d.guardsOnDay) {
+						if(lg.name.contains(l.name)) {
+							check = true;
+						}
+					}
+					for(poolSeniorGuard lgp : d.poolSGOnDay) {
+						if(lgp.name.contains(l.name)) {
+							check = true;
+						}
+					}
+				}
+			}
 			Integer numDaysTemp = l.numDays;
 			if(numDaysTemp < min && check == false) {
 				min = numDaysTemp;
@@ -134,6 +169,7 @@ public class schedule {
 		lifeguard l = lifeguards.get(index);
 		l.numDays++;
 		l.daysNotAvailable.add(new day(num));
+		
 		return lifeguards.get(index);
 	}
 	public static seniorGuard getSeniorGuard(int num) {
@@ -156,6 +192,7 @@ public class schedule {
 			indexTemp++;
 			check = false;
 		}
+		
 		seniorGuards.get(index).numDays++;
 		return seniorGuards.get(index);
 	}
@@ -185,6 +222,75 @@ public class schedule {
 		
 		return gateGuards.get(index);
 	}
+	
+	public static grounds getGrounds(int num) {
+		int min = 10;
+		int indexTemp = 0;
+		int index = 0;
+		boolean check = false;
+		
+		for(grounds g : grounds) {
+			for(day d : g.daysNotAvailable) {
+				if(d.name== num) {
+					check = true;
+				}
+			}
+			Integer numDaysTemp = g.numDays;
+			if(numDaysTemp < min && check == false) {
+				min = numDaysTemp;
+				index = indexTemp;
+			}
+			indexTemp++;
+			check = false;
+		}
+
+		grounds.get(index).numDays++;
+		
+		return grounds.get(index);
+	}
+	
+	public static poolSeniorGuard getPoolSG(int num) {
+		int min = 10;
+		int indexTemp = 0;
+		int index = 0;
+		boolean check = false;
+		
+		for(poolSeniorGuard psg : poolSG) {
+			for(day d : psg.daysNotAvailable) {
+				if(d.name== num) {
+					check = true;
+				}
+			}
+		
+		for (day d : schedule.daysInPeriod) {
+			if(d.name == num) {
+				for (lifeguard l : d.guardsOnDay) {
+					if(l.name.contains(psg.name)) {
+						check = true;
+					}
+				}
+				for(seniorGuard sg : d.sgOnDay) {
+					if(sg.name.contains(psg.name)) {
+						check = true;
+					}
+				}
+			}
+		}
+		
+		Integer numDaysTemp = psg.numDays;
+		if(numDaysTemp < min && check == false) {
+			min = numDaysTemp;
+			index = indexTemp;
+		}
+		indexTemp++;
+		check = false;
+		}
+
+		poolSG.get(index).numDays++;
+		
+		return poolSG.get(index);
+	}
+	
 	/*
 	 * Generates Schedule and ensures the correct number of lifeguards, senior guards, head guard, manager, asst manager, grounds personnel are on duty.
 	 * @param None
@@ -198,7 +304,6 @@ public class schedule {
 			numDaysInStart = 31;
 		}
 		if (startMonth.toUpperCase().contains("JUNE")) {
-			System.out.println("YUP");
 			numDaysInStart = 30;
 		}
 		if (startMonth.toUpperCase().contains("JULY")) {
@@ -211,12 +316,8 @@ public class schedule {
 			numDaysInStart = 30;
 		}
 		
-		int numDaysInBegMonth = numDaysInStart - beg;
-		System.out.println(numDaysInBegMonth);
-		int numDaysInEndMonth = end - numDaysInBegMonth;
 		if(beg > end) {
-			ArrayList<day> days = new ArrayList<day>();
-			for(int i = beg; i < numDaysInStart; i++) {
+			for(int i = beg; i <= numDaysInStart + 1; i++) {
 				day dayOfWeek = new day(i);
 				daysInPeriod.add(dayOfWeek);
 			}
@@ -226,7 +327,7 @@ public class schedule {
 			}
 		}
 		else {
-			for(int i = beg; i <= end - beg + 1; i ++) {
+			for(int i = beg; i <= end; i ++) {
 				day dayofWeek = new day(i);
 				daysInPeriod.add(dayofWeek);
 			}
@@ -309,12 +410,62 @@ public class schedule {
 				}
 			
 			}
+			for (grounds g : schedule.grounds) {
+				if(d.numGrounds < 1) {
+					if(g.numDays < 10) {
+						if(!(g.daysNotAvailable.contains(d.name))) {
+							if(!(d.groundsOnDay.contains(g)) && d.numGrounds < 1) {
+								if(d.numGrounds < 1) {
+									d.groundsOnDay.add(schedule.getGrounds(d.name));
+									
+									d.numGrounds++;
+								}
+								else {
+									if(d.numGrounds < 1) {
+										//System.out.println(d.numGuards);
+										d.groundsOnDay.add(schedule.getGrounds(d.name));
+										//System.out.println(l.name);
+										
+										d.numGrounds++;
+									}
+								}
+							}
+						}
+					}
+				}
+			
+			}
 		}
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	public void generatePoolSchedule() {
 		for (day d : daysInPeriod) {
+			for (poolSeniorGuard psg : schedule.poolSG) {
+				if(d.numPoolSG < 1) {
+					if(psg.numDays < 10) {
+						if(!(psg.daysNotAvailable.contains(d.name))) {
+							if(!(d.poolSGOnDay.contains(psg)) && d.numGuardsPool < 1) {
+								if(d.numPoolSG < 1) {
+									d.poolSGOnDay.add(schedule.getPoolSG(d.name));
+									
+									d.numPoolSG++;
+								}
+								else {
+									if(d.numPoolSG < 1) {
+										//System.out.println(d.numGuards);
+										d.poolSGOnDay.add(schedule.getPoolSG(d.name));
+										//System.out.println(l.name);
+										
+										d.numPoolSG++;
+									}
+								}
+							}
+						}
+					}
+				}
+			
+			}
 			for (lifeguard l : schedule.lifeguards) {
 				if(d.numGuardsPool < 3) {
 					if(l.numDays < 10) {
@@ -402,10 +553,20 @@ public class schedule {
 		}
 		schedule.grounds = groundsList;
 		
+		List<String> poolSGTemp = new ArrayList<String>();
+		poolSGTemp = employeeFile.getPoolSG("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		List<poolSeniorGuard> poolSGList = new ArrayList<poolSeniorGuard>();
+		for(String g : poolSGTemp) {
+			try {
+			g = g.substring(0, g.indexOf("|"));
+			}catch(Exception e) {
+				poolSGList.add(new poolSeniorGuard(g));
+			}
+			poolSGList.add(new poolSeniorGuard(g));
+		}
+		schedule.poolSG = poolSGList;
+		
 	}
-	
-	
-	
 	
 	//getter methods
 	

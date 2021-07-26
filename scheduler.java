@@ -6,6 +6,7 @@ import java.util.*;
 public class scheduler {
 	
 	public static void main(String[] args) {
+		String path = "C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text";
 		int start, end; 
 
 		Scanner s = new Scanner(System.in); 
@@ -24,26 +25,18 @@ public class scheduler {
 		System.out.println("Please enter the day for the end period");
 		
 		end = s.nextInt(); 
-		for(gateGuard g : schedule.gateGuards) {
-			System.out.println("IN LOOP");
-			System.out.println(g.name);
-		}
-		for(day d : schedule.daysInPeriod) {
-			System.out.println(d.name);
-		}
 		
 		employeeFile.createFileAndInitialize();
 		schedule.createEmployeeLists();
 		//schedule.generateSchedule(start, end);
 		try {
-			schedule.checkAvailability("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+			schedule.checkAvailability(path);
 		} catch (FileNotFoundException e) {
 			System.out.println("ERROR");
 			e.printStackTrace();
 		}
 		schedule.generateSchedule(start, end, startMonth);
 		schedule.generatePoolSchedule();
-		System.out.println(schedule.daysInPeriod);
 		for(day d : schedule.daysInPeriod) {
 			System.out.println(d.name);
 			System.out.println("---------------------");
@@ -59,8 +52,17 @@ public class scheduler {
 			for (gateGuard g : d.gateOnDay) {
 				System.out.println(g.name);
 			}
+			System.out.println("GROUNDS: ");
+			for (grounds g : d.groundsOnDay) {
+				System.out.println(g.name);
+			}
 			System.out.println("---------------------");
 			System.out.println("POOL:");
+			System.out.println("POOL SENIOR GUARDS: ");
+			for(poolSeniorGuard psg : d.poolSGOnDay) {
+				System.out.println(psg.name);
+			}
+			System.out.println("LIFEGUARDS: ");
 			for(lifeguard lg : d.guardsAtPool) {
 				System.out.println(lg.name);
 			}

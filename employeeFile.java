@@ -1,6 +1,7 @@
 package lifeguardScheduler;
 
 import java.util.*; 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,8 +10,9 @@ import java.awt.Desktop;
 
 public class employeeFile {
 	public static void createFileAndInitialize(){
+		String path = "C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text";
 		try {
-			File file = new File("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+			File file = new File(path);
 			if(file.exists()) {
 				System.out.println("File already exists, would you like to edit this file?");
 				System.out.println("If so, type 'yes', if not then type 'no'");
@@ -18,7 +20,7 @@ public class employeeFile {
 				Scanner s = new Scanner(System.in); 
 				String answer = s.nextLine(); 
 				if(answer.toUpperCase().equals("YES")) {
-					employeeFile.editFile("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+					employeeFile.editFile(path);
 				}
 			}
 			else {
@@ -135,7 +137,6 @@ public class employeeFile {
 		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
 		    }
 		}
-		System.out.println("Size is " + guardList.size());
 		return guardList;
 	}
 	
@@ -151,7 +152,7 @@ public class employeeFile {
 				token = s.nextLine().trim();
 				if (token.contains("SENIOR GUARDS:")) {
 					while(s.hasNextLine()) {
-						if (token.contains("GATE")) {
+						if (token.contains("POOL SENIOR GUARDS:")) {
 							break;
 						}
 						token = s.nextLine().trim();
@@ -176,7 +177,6 @@ public class employeeFile {
 		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
 		    }
 		}
-		System.out.println("Size is " + guardList.size());
 		return guardList;
 	}
 	
@@ -217,7 +217,6 @@ public class employeeFile {
 		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
 		    }
 		}
-		System.out.println("Size is " + gate.size());
 		return gate;
 	}
 	
@@ -257,6 +256,47 @@ public class employeeFile {
 		}
 		//System.out.println("Size is " + ground.size());
 		return ground;
+	}
+
+	public static List<String> getPoolSG(String filePath) {
+		File file = new File(filePath);
+		List<String> poolSG = new ArrayList<String>();
+		try {
+			@SuppressWarnings("resource")
+			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			String token;
+			List<String> temp = new ArrayList<String>();
+			while(s.hasNextLine()) {
+				token = s.nextLine().trim();
+				if (token.contains("POOL SENIOR GUARDS:")) {
+					while(s.hasNextLine()) {
+						if (token.contains("GATE")) {
+							break;
+						}
+						token = s.nextLine().trim();
+						temp.add(token);
+					}
+				}
+					
+			}
+			poolSG = temp;
+		} catch(Exception e){
+			System.out.println("Error getting file!");
+		}
+		for (Iterator<String> iterator = poolSG.iterator(); iterator.hasNext();) {
+		    String sNext = iterator.next();
+		    if(sNext == "") {
+		        iterator.remove();
+		    }
+		    if(sNext.endsWith(":")) {
+		    	iterator.remove();
+		    }
+		    if(sNext.contains("|")) {
+		    	 sNext = sNext.substring(0 , sNext.indexOf("|"));
+		    }
+		}
+		//System.out.println("Size is " + ground.size());
+		return poolSG;
 	}
 	
 	
