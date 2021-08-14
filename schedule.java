@@ -1,10 +1,8 @@
 package lifeguardScheduler;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,48 +12,47 @@ public class schedule {
 	static List<seniorGuard> seniorGuards;
 	static List<gateGuard> gateGuards;
 	private static List<grounds> grounds;
-	private manager manager;
-	private headGuard headGuard;
-	private	asstManager asstManager;
 	static List<day> daysInPeriod;
 	static List<lifeguard> lifeguardsAtPool;
 	static List<poolSeniorGuard> poolSG;
 	
 	public schedule() {
-		this.daysInPeriod = new ArrayList<day>();
-		this.asstManager = new asstManager("Alexis");
+		schedule.daysInPeriod = new ArrayList<day>();
 		schedule.gateGuards = new ArrayList<gateGuard>();
-		this.headGuard = new headGuard("Cameron");
 		schedule.lifeguards = new ArrayList<lifeguard>();
 		schedule.seniorGuards = new ArrayList<seniorGuard>();
-		this.manager = new manager("Luke");
-		this.lifeguardsAtPool = new ArrayList<lifeguard>();
-		this.poolSG = new ArrayList<poolSeniorGuard>();
+		schedule.lifeguardsAtPool = new ArrayList<lifeguard>();
+		schedule.poolSG = new ArrayList<poolSeniorGuard>();
 	}
 
-	public void checkAvailability(String filePath) throws FileNotFoundException {
-		File file = new File(filePath);
+	public void checkAvailability(employeeFile file) throws FileNotFoundException {
 		for(lifeguard l : schedule.lifeguards) {
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
-			while(s.hasNextLine()) {
-				String token = s.nextLine();
-				if(token.contains(l.getName())) {
-					String days = token.substring(token.indexOf("|") + 1);
-					days.replaceAll("\\s","");
-					List<String> tempDays = Arrays.asList(days.split("\\s*,\\s*"));
-					List<day> dayList = new ArrayList<day>();
-					for(String day : tempDays) {
-						String tempDay = day.replaceAll("\\s","");
-						dayList.add(new day(Integer.parseInt(tempDay)));
+			Scanner s;
+			try {
+				s = new Scanner(file.file).useDelimiter(",\\s*");
+				while(s.hasNextLine()) {
+					String token = s.nextLine();
+					if(token.contains(l.getName())) {
+						String days = token.substring(token.indexOf("|") + 1);
+						days.replaceAll("\\s","");
+						List<String> tempDays = Arrays.asList(days.split("\\s*,\\s*"));
+						List<day> dayList = new ArrayList<day>();
+						for(String day : tempDays) {
+							String tempDay = day.replaceAll("\\s","");
+							dayList.add(new day(Integer.parseInt(tempDay)));
+						}
+						l.daysNotAvailable = dayList;
+						dayList = null;
 					}
-					l.daysNotAvailable = dayList;
-					dayList = null;
 				}
+				s.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			s.close();
 		}
 		for(seniorGuard sg : schedule.seniorGuards) {
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(file.file).useDelimiter(",\\s*");
 			while(s.hasNextLine()) {
 				String token = s.nextLine();
 				if(token.contains(sg.getName())){
@@ -74,7 +71,7 @@ public class schedule {
 			s.close();
 		}
 		for(gateGuard g : schedule.gateGuards) {
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(file.file).useDelimiter(",\\s*");
 			while(s.hasNextLine()) {
 				String token = s.nextLine();
 				if(token.contains(g.getName())){
@@ -93,7 +90,7 @@ public class schedule {
 			s.close();
 		}
 		for(grounds g : schedule.grounds) {
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(file.file).useDelimiter(",\\s*");
 			while(s.hasNextLine()) {
 				String token = s.nextLine();
 				if(token.contains(g.getName())){
@@ -112,7 +109,7 @@ public class schedule {
 			s.close();
 		}
 		for(poolSeniorGuard psg : schedule.poolSG) {
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(file.file).useDelimiter(",\\s*");
 			while(s.hasNextLine()) {
 				String token = s.nextLine();
 				if(token.contains(psg.getName())){
@@ -334,7 +331,7 @@ public class schedule {
 		}
 		
 
-		for(day d : this.daysInPeriod) {
+		for(day d : schedule.daysInPeriod) {
 			for (lifeguard l : schedule.lifeguards) {
 				if(d.numGuards < 4) {
 					if(l.numDays < 10) {
@@ -494,10 +491,11 @@ public class schedule {
 		}
 	}
 	
-	public void createEmployeeLists() {
+	public void createEmployeeLists(employeeFile file) {
 		//creating lifeguard Array
+
 		List<String> lifeguardList = new ArrayList<String>();
-		lifeguardList = employeeFile.getLifeguards("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		lifeguardList = file.getLifeguards();
 		List<lifeguard> guardList = new ArrayList<lifeguard>();
 		for(String guard : lifeguardList) {
 			try {
@@ -513,7 +511,7 @@ public class schedule {
 		
 		
 		List<String> SGList = new ArrayList<String>();
-		SGList = employeeFile.getSeniorGuards("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		SGList = file.getSeniorGuards();
 		
 		List<seniorGuard> sgList = new ArrayList<seniorGuard>();
 		for (String sg : SGList) {
@@ -528,7 +526,7 @@ public class schedule {
 		schedule.seniorGuards = sgList;
 		
 		List<String> gate = new ArrayList<String>();
-		gate = employeeFile.getGate("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		gate = file.getGate();
 		List<gateGuard> gateList = new ArrayList<gateGuard>();
 		for(String g : gate) {
 			try {
@@ -541,7 +539,7 @@ public class schedule {
 		schedule.gateGuards = gateList;
  
 		List<String> grounds = new ArrayList<String>();
-		grounds = employeeFile.getGround("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		grounds = file.getGround();
 		List<grounds> groundsList = new ArrayList<grounds>();
 		for(String g : grounds) {
 			try {
@@ -554,7 +552,7 @@ public class schedule {
 		schedule.grounds = groundsList;
 		
 		List<String> poolSGTemp = new ArrayList<String>();
-		poolSGTemp = employeeFile.getPoolSG("C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text");
+		poolSGTemp = file.getPoolSG();
 		List<poolSeniorGuard> poolSGList = new ArrayList<poolSeniorGuard>();
 		for(String g : poolSGTemp) {
 			try {

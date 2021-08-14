@@ -5,8 +5,8 @@ import java.util.*;
 
 public class scheduler {
 	
-	public static void main(String[] args) {
-		String path = "C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text";
+	public static void main(String[] args) throws FileNotFoundException {
+		employeeFile file = new employeeFile("Employee.txt");
 		int start, end; 
 
 		Scanner s = new Scanner(System.in); 
@@ -26,18 +26,11 @@ public class scheduler {
 		
 		end = s.nextInt(); 
 		
-		employeeFile.createFileAndInitialize();
-		schedule.createEmployeeLists();
-		//schedule.generateSchedule(start, end);
-		try {
-			schedule.checkAvailability(path);
-		} catch (FileNotFoundException e) {
-			System.out.println("ERROR");
-			e.printStackTrace();
-		}
+		schedule.createEmployeeLists(file);
+		schedule.checkAvailability(file);
 		schedule.generateSchedule(start, end, startMonth);
 		schedule.generatePoolSchedule();
-		for(day d : schedule.daysInPeriod) {
+		for(day d : lifeguardScheduler.schedule.daysInPeriod) {
 			System.out.println(d.name);
 			System.out.println("---------------------");
 			System.out.println("LIFEGUARDS:");

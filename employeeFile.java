@@ -9,10 +9,15 @@ import java.io.FileWriter;
 import java.awt.Desktop;  
 
 public class employeeFile {
-	public static void createFileAndInitialize(){
-		String path = "C:\\Users\\18452\\cs140\\eclipse\\src\\Lifeguard_Scheduler\\src\\lifeguardScheduler\\employee.text";
-		try {
-			File file = new File(path);
+	File file;
+	
+	public employeeFile(String name) {
+		this.file = createFileAndInitialize(name);
+	}
+	
+	public static File createFileAndInitialize(String name){
+		
+			File file = new File(name);
 			if(file.exists()) {
 				System.out.println("File already exists, would you like to edit this file?");
 				System.out.println("If so, type 'yes', if not then type 'no'");
@@ -20,96 +25,97 @@ public class employeeFile {
 				Scanner s = new Scanner(System.in); 
 				String answer = s.nextLine(); 
 				if(answer.toUpperCase().equals("YES")) {
-					employeeFile.editFile(path);
+					employeeFile.editFile(file);
 				}
 			}
 			else {
 				Scanner s = new Scanner(System.in); 
 				//create file
-				file.createNewFile();
+				try {
+					file.createNewFile();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				System.out.println("Created an employee file to track employees");
 				//create file writer
-				FileWriter writer = new FileWriter(file);
-				//create print writer
-				PrintWriter pw = new PrintWriter(writer);
-				//write to file
-				pw.println("LIFEGUARDS:");
-				System.out.println("Add Lifeguards to the file, when Finished, type DONE");
-				while(true) {
-					String input = s.nextLine();
-					if (input.trim().equalsIgnoreCase("done")) {
-		                System.out.println("Added Lifeguards to file");
-		                break;
-		            }
-					pw.println(input);
-				}
-				System.out.println("Add Senior Guards to File");
-				pw.println("");
-				pw.println("SENIOR GUARDS:");
-				pw.println("");
-				while(true) {
-					String input = s.nextLine();
-					if (input.trim().equalsIgnoreCase("done")) {
-		                System.out.println("Added Senior guards to file");
-		                break;
-		            }
-					pw.println(input);
-				}
-				System.out.println("Add Gate Guards to File");
-				pw.println("");
-				pw.println("GATE GUARDS:");
-				pw.println("");
-				while(true) {
-					String input = s.nextLine();
-					if (input.trim().equalsIgnoreCase("done")) {
-		                System.out.println("Added Gate Guards to file");
-		                break;
-		            }
-					pw.println(input);
-				}
-				System.out.println("Add Grounds to File");
-				pw.println("");
-				pw.println("GROUNDS:");
-				pw.println("");
-				while(true) {
-					String input = s.nextLine();
-					if (input.trim().equalsIgnoreCase("done")) {
-		                System.out.println("Added Grounds to file");
-		                break;
-		            }
-					pw.println(input);
+				FileWriter writer;
+				try {
+					writer = new FileWriter(file);
+					PrintWriter pw = new PrintWriter(writer);
+					//write to file
+					pw.println("LIFEGUARDS:");
+					System.out.println("Add Lifeguards to the file, when Finished, type DONE");
+					while(true) {
+						String input = s.nextLine();
+						if (input.trim().equalsIgnoreCase("done")) {
+			                System.out.println("Added Lifeguards to file");
+			                break;
+			            }
+						pw.println(input);
+					}
+					System.out.println("Add Senior Guards to File");
+					pw.println("");
+					pw.println("SENIOR GUARDS:");
+					pw.println("");
+					while(true) {
+						String input = s.nextLine();
+						if (input.trim().equalsIgnoreCase("done")) {
+			                System.out.println("Added Senior guards to file");
+			                break;
+			            }
+						pw.println(input);
+					}
+					System.out.println("Add Gate Guards to File");
+					pw.println("");
+					pw.println("GATE GUARDS:");
+					pw.println("");
+					while(true) {
+						String input = s.nextLine();
+						if (input.trim().equalsIgnoreCase("done")) {
+			                System.out.println("Added Gate Guards to file");
+			                break;
+			            }
+						pw.println(input);
+					}
+					System.out.println("Add Grounds to File");
+					pw.println("");
+					pw.println("GROUNDS:");
+					pw.println("");
+					while(true) {
+						String input = s.nextLine();
+						if (input.trim().equalsIgnoreCase("done")) {
+			                System.out.println("Added Grounds to file");
+			                break;
+			            }
+						pw.println(input);
+					}
+					
+					
+					pw.close();
+					s.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				
-				
-				pw.close();
-				s.close();
 			}
-		}catch (IOException e) {
-			System.out.println("Unable to generate a file");
-		}
+			return file;
 	}
 	
-	public static void editFile(String filePath) {
+	public static void editFile(File file) {
 		try {
-			File file = new File(filePath);
-			try {
-				Desktop desktop = Desktop.getDesktop();
-				if(file.exists()) {
-					desktop.open(file);
-				}
-				}catch(Exception e){
-					System.out.println("This action is not supported!");
-				}
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
+			Desktop desktop = Desktop.getDesktop();
+			desktop.open(file);
+		}catch(Exception e){
+			System.out.println("This action is not supported!");
 		}
-	public static List<String> getLifeguards(String filePath) {
-		File file = new File(filePath);
+	}
+	public List<String> getLifeguards() {
 		List<String> guardList = new ArrayList<String>();
 		try {
 			@SuppressWarnings("resource")
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(this.file).useDelimiter(",\\s*");
 			String token;
 			//List<String> lifeguardList = new ArrayList<String>();
 			List<String> temp = new ArrayList<String>();
@@ -140,12 +146,11 @@ public class employeeFile {
 		return guardList;
 	}
 	
-	public static List<String> getSeniorGuards(String filePath) {
-		File file = new File(filePath);
+	public List<String> getSeniorGuards() {
 		List<String> guardList = new ArrayList<String>();
 		try {
 			@SuppressWarnings("resource")
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(this.file).useDelimiter(",\\s*");
 			String token;
 			List<String> temp = new ArrayList<String>();
 			while(s.hasNextLine()) {
@@ -180,12 +185,11 @@ public class employeeFile {
 		return guardList;
 	}
 	
-	public static List<String> getGate(String filePath) {
-		File file = new File(filePath);
+	public List<String> getGate() {
 		List<String> gate = new ArrayList<String>();
 		try {
 			@SuppressWarnings("resource")
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(this.file).useDelimiter(",\\s*");
 			String token;
 			List<String> temp = new ArrayList<String>();
 			while(s.hasNextLine()) {
@@ -220,12 +224,11 @@ public class employeeFile {
 		return gate;
 	}
 	
-	public static List<String> getGround(String filePath) {
-		File file = new File(filePath);
+	public List<String> getGround() {
 		List<String> ground = new ArrayList<String>();
 		try {
 			@SuppressWarnings("resource")
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(this.file).useDelimiter(",\\s*");
 			String token;
 			List<String> temp = new ArrayList<String>();
 			while(s.hasNextLine()) {
@@ -258,12 +261,11 @@ public class employeeFile {
 		return ground;
 	}
 
-	public static List<String> getPoolSG(String filePath) {
-		File file = new File(filePath);
+	public List<String> getPoolSG() {
 		List<String> poolSG = new ArrayList<String>();
 		try {
 			@SuppressWarnings("resource")
-			Scanner s = new Scanner(file).useDelimiter(",\\s*");
+			Scanner s = new Scanner(this.file).useDelimiter(",\\s*");
 			String token;
 			List<String> temp = new ArrayList<String>();
 			while(s.hasNextLine()) {
