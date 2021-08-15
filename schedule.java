@@ -190,6 +190,15 @@ public class schedule {
 			check = false;
 		}
 		
+		/*
+		 * ran into error when there were no senior guards on a day, the method would just return the senior guard that was index zero in 
+		 * the senior guards list. Now the method returns "NONE" when no senior guard is available.
+		 */
+		
+		for (day d : seniorGuards.get(index).daysNotAvailable) {
+			if(d.name == num) return new seniorGuard("NONE");
+		}
+		
 		seniorGuards.get(index).numDays++;
 		return seniorGuards.get(index);
 	}
@@ -213,6 +222,10 @@ public class schedule {
 			}
 			indexTemp++;
 			check = false;
+		}
+		
+		for (day d : gateGuards.get(index).daysNotAvailable) {
+			if(d.name == num) return new gateGuard("NONE");
 		}
 
 		gateGuards.get(index).numDays++;
@@ -239,6 +252,10 @@ public class schedule {
 			}
 			indexTemp++;
 			check = false;
+		}
+		
+		for (day d : grounds.get(index).daysNotAvailable) {
+			if(d.name == num) return new grounds("NONE");
 		}
 
 		grounds.get(index).numDays++;
@@ -281,6 +298,10 @@ public class schedule {
 		}
 		indexTemp++;
 		check = false;
+		}
+		
+		for (day d : poolSG.get(index).daysNotAvailable) {
+			if(d.name == num) return new poolSeniorGuard("NONE");
 		}
 
 		poolSG.get(index).numDays++;
