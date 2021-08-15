@@ -1,6 +1,8 @@
 package lifeguardScheduler;
 
-import java.util.*; 
+import java.util.*;
+
+import javax.swing.JOptionPane;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,11 +21,7 @@ public class employeeFile {
 		
 			File file = new File(name);
 			if(file.exists()) {
-				System.out.println("File already exists, would you like to edit this file?");
-				System.out.println("If so, type 'yes', if not then type 'no'");
-				@SuppressWarnings("resource")
-				Scanner s = new Scanner(System.in); 
-				String answer = s.nextLine(); 
+				String answer = JOptionPane.showInputDialog("Would you like to edit the employee file? Type 'yes' or 'no'");
 				if(answer.toUpperCase().equals("YES")) {
 					employeeFile.editFile(file);
 				}

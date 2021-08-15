@@ -31,8 +31,4 @@ public class day {
 		this.poolSGOnDay = new ArrayList<poolSeniorGuard>();
 		this.groundsOnDay = new ArrayList<grounds>();
 	}
-	
-	
-	
-	
 }
